@@ -5,15 +5,16 @@ const createHomeApp = require('./app/home');
 // const createRecordViewingsApp = require('./app/record-viewings');
 
 function createConfig({ env }) {
+  const db = createKnexClient({ env });
   const homeApp = createHomeApp({ db });
 
   // const recordViewingsApp = createRecordViewingsApp({ db });
 
-  return { 
+  return {
     env,
     db,
     homeApp,
-   };
+  };
 }
 
 module.exports = createConfig;

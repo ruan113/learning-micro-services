@@ -22,6 +22,6 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_USER: username # The PostgreSQL user (useful to connect to the database)
-      POSTGRES_PASSWORD: password # The PostgreSQL password (useful to connect to the database)
-      POSTGRES_DB: first-pass # The PostgreSQL default database (automatically created at first launch)
+      POSTGRES_USER: postgres # The PostgreSQL user (useful to connect to the database)
+      POSTGRES_PASSWORD: postgres # The PostgreSQL password (useful to connect to the database)
+      POSTGRES_DB: knex-pg-db # The PostgreSQL default database (automatically created at first launch)
