@@ -7,6 +7,8 @@ const createMessageStore = require('./message-store');
 
 const createHomePageAggregator = require('./aggregators/home-page')
 
+const createRegisterUsersApp = require('./app/register-users')
+
 function createConfig({ env }) {
   const knexClient = createKnexClient({ env });
   const postgresClient = createPostgresClient({
@@ -20,6 +22,12 @@ function createConfig({ env }) {
     db: knexClient,
     messageStore
   });
+
+  const registerUsersApp = createRegisterUsersApp({
+    db: knexClient,
+    messageStore
+  });
+
   const aggregators = [
     homePageAggregator,
   ];
@@ -35,6 +43,7 @@ function createConfig({ env }) {
     homePageAggregator,
     aggregators,
     components,
+    registerUsersApp,
   };
 }
 
