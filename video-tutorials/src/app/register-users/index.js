@@ -4,6 +4,14 @@ const camelCaseKeys = require('camelcase-keys')
 const express = require('express')
 const { v4: uuid } = require('uuid');
 
+const validate = require('./validate');
+const loadExistingIdentity = require('./load-existing-identity');
+const ensureThereWasNoExistingIdentity = require('./ensure-there-was-no-existing-identity');
+const writeRegisterCommand = require('./write-register-command');
+const hashPassword = require('./hash-password');
+
+const ValidationError = require('../errors/validation-error');
+
 function createHandlers({ actions }) {
   function handleRegistrationForm(req, res) {
     const userId = uuid();

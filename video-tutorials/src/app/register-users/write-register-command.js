@@ -1,3 +1,5 @@
+const { v4: uuid } = require('uuid');
+
 function writeRegisterCommand(context) {
   const userId = context.attributes.id;
   const stream = `identity:command-${userId}`;
