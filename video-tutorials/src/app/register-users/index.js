@@ -5,9 +5,15 @@ const express = require('express')
 const { v4: uuid } = require('uuid');
 
 const validate = require('./validate');
+
 const loadExistingIdentity = require('./load-existing-identity');
+
 const ensureThereWasNoExistingIdentity = require('./ensure-there-was-no-existing-identity');
+const ensureAccountExists = require('./ensure-account-exists');
+
 const writeRegisterCommand = require('./write-register-command');
+const writeLockCommand = require('./write-lock-command');
+
 const hashPassword = require('./hash-password');
 
 const ValidationError = require('../errors/validation-error');
@@ -43,10 +49,30 @@ function createHandlers({ actions }) {
       .catch(next);
   }
 
+  function handleLockUserAccount(req, res, next) {
+    const attributes = {
+      email: req.body.email,
+    };
+
+    return actions
+      .lockUserAccount(req.context.traceId, attributes)
+      .then(() => {
+        res
+          .status(200)
+          .render(
+            'register-users/templates/account-locked',
+            { userEmail: attributes.email }
+          )
+      })
+      .catch(ValidationError, err => { console.log(err); })
+      .catch(next);
+  }
+
   return {
     handleRegistrationForm,
     handleRegistrationComplete,
     handleRegisterUser,
+    handleLockUserAccount,
   };
 }
 
@@ -78,27 +104,48 @@ function createActions({ messageStore, queries }) {
       .then(writeRegisterCommand);
   }
 
+  function lockUserAccount(traceId, attributes) {
+    const context = { attributes, traceId, messageStore, queries };
+
+    return Bluebird.resolve(context)
+      .then(validate)
+      .then(loadExistingIdentity)
+      .then(ensureAccountExists)
+      .then(writeLockCommand);
+  }
+
   return {
-    registerUser
+    registerUser,
+    lockUserAccount,
   };
 }
 
 function build({ db, messageStore }) {
-  const queries = createQueries({ db })
-  const actions = createActions({ messageStore, queries })
-  const handlers = createHandlers({ actions })
-  const router = express.Router()
+  const queries = createQueries({ db });
+  const actions = createActions({ messageStore, queries });
+  const handlers = createHandlers({ actions });
+  const router = express.Router();
+
   router
     .route('/')
     .get(handlers.handleRegistrationForm)
     .post(
       bodyParser.urlencoded({ extended: false }),
       handlers.handleRegisterUser
-    )
+    );
+
   router
     .route('/registration-complete')
-    .get(handlers.handleRegistrationComplete)
-  return { actions, handlers, queries, router }
+    .get(handlers.handleRegistrationComplete);
+
+  router
+    .route('/lock-account')
+    .post(
+      bodyParser.urlencoded({ extended: false }),
+      handlers.handleLockUserAccount
+    );
+
+  return { actions, handlers, queries, router };
 }
 
 module.exports = build;

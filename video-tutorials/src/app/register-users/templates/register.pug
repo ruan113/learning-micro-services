@@ -15,3 +15,12 @@ block content
       if errors && errors.password
         .invalid-feedback= errors.password.join(', ')
     button(type="submit") Register!
+  br
+  h1 Lock Account
+  form(action="/register/lock-account" method="POST")
+    .form-group
+      label(for="email") Email
+      input#email.form-control(class={ 'is-invalid': errors && errors.email } type="email" name="email" placeholder="email")
+      if errors && errors.email
+        .invalid-feedback= errors.email.join(', ')
+    button(type="submit") Lock!

@@ -1,11 +1,11 @@
 const { v4: uuid } = require('uuid');
 
-function writeRegisteredEvent(context, err) {
+function writeLockedEvent(context, err) {
   const command = context.command;
 
-  const registeredEvent = {
+  const lockedEvent = {
     id: uuid(),
-    type: 'Registered',
+    type: 'Locked',
     metadata: {
       traceId: command.metadata.traceId,
       userId: command.metadata.userId
@@ -20,8 +20,8 @@ function writeRegisteredEvent(context, err) {
   const identityStreamName = `identity-${command.data.userId}`;
 
   return context.messageStore
-    .write(identityStreamName, registeredEvent)
+    .write(identityStreamName, lockedEvent)
     .then(() => context);
 }
 
-module.exports = writeRegisteredEvent;
+module.exports = writeLockedEvent;

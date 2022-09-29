@@ -3,7 +3,8 @@ exports.up = function up(knex) {
     table.string('id').primary()
     table.string('email').notNullable()
     table.string('password_hash').notNullable()
-    table.index('email')
+    table.string('locked_time').
+      table.index('email')
   })
 }
 

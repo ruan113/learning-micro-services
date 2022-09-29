@@ -14,7 +14,14 @@ const constraints = {
 }
 
 function v(context) {
-  const validationErrors = validate(context.attributes, constraints)
+  const constraintsAux = Object.keys(context.attributes).reduce((acc, it) => {
+    if (constraints[it]) {
+      acc[it] = constraints[it];
+    }
+    return acc;
+  }, {});
+
+  const validationErrors = validate(context.attributes, constraintsAux);
 
   if (validationErrors) {
     throw new ValidationError(validationErrors)
