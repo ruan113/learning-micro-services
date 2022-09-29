@@ -6,6 +6,10 @@ const getCategoryMessagesSql = 'SELECT * FROM get_category_messages($1, $2, $3)'
 const getStreamMessagesSql = 'SELECT * FROM get_stream_messages($1, $2, $3)';
 
 function createRead({ db }) {
+  function fetch(streamName, projection) {
+    return read(streamName).then(messages => project(messages, projection))
+  }
+
   function readLastMessage(streamName) {
     return db.query(getLastMessageSql, [streamName])
       .then(res => deserializeMessage(res.rows[0]))
@@ -27,9 +31,20 @@ function createRead({ db }) {
       .then(res => res.rows.map(deserializeMessage))
   }
 
+  function project(events, projection) {
+    return events.reduce((entity, event) => {
+      if (!projection[event.type]) {
+        return entity;
+      }
+
+      return projection[event.type](entity, event);
+    }, projection.$init());
+  }
+
   return {
     read,
     readLastMessage,
+    fetch,
   }
 }
 
