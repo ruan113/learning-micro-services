@@ -12,6 +12,8 @@ const createRegisterUsersApp = require('./app/register-users')
 
 const createIdentityComponent = require('./components/identity')
 
+const createAuthenticateApp = require('./app/authenticate');
+
 function createConfig({ env }) {
   const knexClient = createKnexClient({ env });
   const postgresClient = createPostgresClient({
@@ -22,6 +24,11 @@ function createConfig({ env }) {
   const recordViewingsApp = createRecordViewingsApp({ messageStore });
 
   const registerUsersApp = createRegisterUsersApp({
+    db: knexClient,
+    messageStore
+  });
+
+  const authenticateApp = createAuthenticateApp({
     db: knexClient,
     messageStore
   });
@@ -59,6 +66,7 @@ function createConfig({ env }) {
     components,
     registerUsersApp,
     identityComponent,
+    authenticateApp,
   };
 }
 
