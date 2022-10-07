@@ -13,5 +13,6 @@ module.exports = {
   version: packageJson.version,
   databaseUrl: requireFromEnv('DATABASE_URL'),
   messageStoreConnectionString:
-    requireFromEnv('MESSAGE_STORE_CONNECTION_STRING')
+    requireFromEnv('MESSAGE_STORE_CONNECTION_STRING'),
+  cookieSecret: requireFromEnv('COOKIE_SECRET'),
 };
