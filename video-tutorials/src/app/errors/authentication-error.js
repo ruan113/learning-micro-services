@@ -6,17 +6,13 @@
  * We make no guarantees that this code is fit for any purpose.
  * Visit http://www.pragmaticprogrammer.com/titles/egmicro for more book information.
 ***/
-function ValidationError (errors, options, attributes, constraints) {
+function AuthenticationError (message) {
   Error.captureStackTrace(this, this.constructor)
-  this.message = `Validation error**${JSON.stringify(errors)}`
-  this.errors = errors
-  this.options = options
-  this.attributes = attributes
-  this.constraints = constraints
-  this.name = 'ValidationError'
+  this.message = message
+  this.name = 'AuthenticationError'
 }
 
-ValidationError.prototype = Object.create(Error.prototype)
-ValidationError.prototype.constructor = ValidationError
+AuthenticationError.prototype = Object.create(Error.prototype)
+AuthenticationError.prototype.constructor = AuthenticationError
 
-module.exports = ValidationError
+module.exports = AuthenticationError
